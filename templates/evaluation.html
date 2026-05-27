@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Late Student Evaluation Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#121212] text-gray-100 min-h-screen font-sans antialiased p-6 md:p-12">
+
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white">LATE STUDENT EVALUATION CENTRE</h1>
+                <p class="text-xs text-gray-400 mt-1">Review arrival variance timestamps and override daily status codes</p>
+            </div>
+            <a href="/teacher-dashboard" class="py-2 px-4 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 font-semibold text-xs rounded-xl transition-all">
+                ← Return to Dashboard
+            </a>
+        </div>
+
+        <div class="bg-[#1e1e1e] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#161616] border-b border-gray-800 text-xs font-bold uppercase text-gray-400 tracking-wider">
+                        <th class="p-4">Student Identity</th>
+                        <th class="p-4">Scan Timestamp</th>
+                        <th class="p-4 text-center">Administrative Decisions Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/50 text-sm">
+                    {% for log in logs %}
+                    <tr id="row-{{ log.Name }}" class="hover:bg-gray-800/10 transition-colors">
+                        <td class="p-4 font-bold text-white tracking-wide">{{ log.Name }}</td>
+                        <td class="p-4 text-rose-400 font-mono font-medium">{{ log.Time }} (LATE)</td>
+                        <td class="p-4 text-center space-x-3">
+                            <button onclick="overrideStatus('{{ log.Name }}', 'PRESENT')" class="px-3 py-1.5 bg-emerald-600/10 hover:bg-emerald-600 border border-emerald-500/20 hover:border-emerald-500 text-emerald-400 hover:text-white font-bold text-xs rounded-lg transition-all shadow-md">
+                                Mark On-Time
+                            </button>
+                            <button onclick="overrideStatus('{{ log.Name }}', 'ABSENT')" class="px-3 py-1.5 bg-rose-600/10 hover:bg-rose-600 border border-rose-500/20 hover:border-rose-500 text-rose-400 hover:text-white font-bold text-xs rounded-lg transition-all shadow-md">
+                                Strike as Absent
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="p-12 text-center text-gray-600 font-medium tracking-wide">
+                            🎉 No late arrivals are waiting for administrative evaluation decisions today!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function overrideStatus(studentName, actionType) {
+            fetch('/api/evaluate-student', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: studentName, action: actionType })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    // Visually animate and remove row row immediately upon successful selection entry
+                    let targetRow = document.getElementById(`row-${studentName}`);
+                    targetRow.style.opacity = '0';
+                    setTimeout(() => { targetRow.remove(); }, 300);
+                } else {
+                    alert("Evaluation submission failed.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>

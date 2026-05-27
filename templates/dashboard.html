@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#121212] text-gray-100 min-h-screen font-sans antialiased p-6 md:p-12">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">ATTENDANCE MANAGEMENT DISPATCH</h1>
+                <p class="text-sm text-gray-400 mt-1">Real-time biometric validation logs for today's session roster</p>
+            </div>
+            <a href="/logout" class="py-2.5 px-5 bg-gray-800 text-gray-300 font-semibold text-sm rounded-xl border border-gray-700 hover:bg-gray-700 hover:text-white transition-all">
+                LOG OUT PANEL
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <a href="/dashboard/view/scanned" class="bg-[#1e1e1e] p-5 border border-gray-800 rounded-2xl shadow-xl flex items-center justify-between hover:border-blue-500/40 transition-all cursor-pointer group">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-blue-400 transition-colors">Total Scanned</p>
+                    <h3 class="text-2xl font-bold text-white mt-1">{{ total }}<span class="text-sm font-normal text-gray-600"> / {{ total_students }}</span></h3>
+                </div>
+                <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </div>
+            </a>
+
+            <a href="/dashboard/view/ontime" class="bg-[#1e1e1e] p-5 border border-gray-800 rounded-2xl shadow-xl flex items-center justify-between hover:border-emerald-500/40 transition-all cursor-pointer group">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-emerald-400 transition-colors">On-Time</p>
+                    <h3 class="text-2xl font-bold text-emerald-400 mt-1">{{ present }}<span class="text-sm font-normal text-gray-600"> / {{ total_students }}</span></h3>
+                </div>
+                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+            </a>
+
+            <a href="/teacher-evaluation" class="bg-[#1e1e1e] p-5 border border-gray-800 rounded-2xl shadow-xl flex items-center justify-between hover:border-rose-500/40 transition-all cursor-pointer group">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-rose-400 transition-colors">Late (Evaluate) ↗</p>
+                    <h3 class="text-2xl font-bold text-rose-400 mt-1">{{ late }}<span class="text-sm font-normal text-gray-600"> / {{ total_students }}</span></h3>
+                </div>
+                <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+            </a>
+
+            <a href="/dashboard/view/absent" class="bg-[#1e1e1e] p-5 border border-gray-800 rounded-2xl shadow-xl flex items-center justify-between hover:border-amber-500/40 transition-all cursor-pointer group">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-amber-400 transition-colors">Absent</p>
+                    <h3 class="text-2xl font-bold text-amber-500 mt-1">{{ absent }}<span class="text-sm font-normal text-gray-600"> / {{ total_students }}</span></h3>
+                </div>
+                <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                </div>
+            </a>
+        </div>
+
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-lg font-bold tracking-wide text-white bg-gray-800/40 px-4 py-1.5 rounded-lg border border-gray-800">
+                Viewing: <span class="text-emerald-400">{{ current_view }}</span>
+            </h2>
+            <input type="text" id="searchBar" onkeyup="filterTable()" placeholder="Filter active listing views by name..." class="px-4 py-2 bg-[#1e1e1e] border border-gray-800 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500 text-xs w-64 shadow-xl">
+        </div>
+
+        <div class="bg-[#1e1e1e] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+            <table class="w-full text-left border-collapse" id="logTable">
+                <thead>
+                    <tr class="bg-[#161616] border-b border-gray-800 text-xs font-bold uppercase text-gray-400 tracking-wider">
+                        <th class="p-4">Student Identity</th>
+                        <th class="p-4">Calendar Date</th>
+                        <th class="p-4">Scan Time Log</th>
+                        <th class="p-4 text-center">Roster Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/50 text-sm text-gray-300">
+                    {% for log in logs %}
+                    <tr class="hover:bg-gray-800/10 transition-colors">
+                        <td class="p-4 font-semibold text-white tracking-wide student-name">{{ log.Name }}</td>
+                        <td class="p-4 text-gray-400">{{ log.Date }}</td>
+                        <td class="p-4 text-gray-400 font-mono">{{ log.Time }}</td>
+                        <td class="p-4 text-center">
+                            {% if log.Status == 'PRESENT' %}
+                            <span class="inline-flex px-2.5 py-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full">ON-TIME</span>
+                            {% elif log.Status == 'LATE' %}
+                            <span class="inline-flex px-2.5 py-1 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-full">LATE</span>
+                            {% else %}
+                            <span class="inline-flex px-2.5 py-1 text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full">ABSENT</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="p-8 text-center text-gray-600 font-medium">No records match this segment filter index.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function filterTable() {
+            let input = document.getElementById("searchBar").value.toUpperCase();
+            let table = document.getElementById("logTable");
+            let tr = table.getElementsByTagName("tr");
+            for (let i = 1; i < tr.length; i++) {
+                let nameTd = tr[i].getElementsByClassName("student-name")[0];
+                if (nameTd) {
+                    let txtValue = nameTd.textContent || nameTd.innerText;
+                    tr[i].style.display = txtValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
